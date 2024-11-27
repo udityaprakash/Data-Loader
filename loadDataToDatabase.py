@@ -26,5 +26,20 @@ def storeinsqlDB(addedfile, dburl, batchsize=100):
 
 inputfile = "NetflixUserbase.csv"
 
+choicedDB = input("Enter storage type (sql/nosql): ")
+
+if choicedDB == "sql":
+    dburl = input("Enter SQL DB URL: ")
+    storeinsqlDB(inputfile, dburl)
+
+elif choicedDB == "nosql":
+
+    mongoDburl = input("Enter Mongodb URL: ")
+    dbname = input("Enter Mongodb Database name")
+    collectionname = input("Enter collection name")
+else:
+    print("Invalid choice choosed")
+
+
 db_url = input("Enter SQL DB URL: ")
 storeinsqlDB(inputfile, db_url, 70)
