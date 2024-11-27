@@ -1,11 +1,18 @@
 import pandas as pd
-from sqlalchemy import sql
+from sqlalchemy import create_engine
 
 def storeinsqlDB(addedfile, dburl, batchsize=100):
+    try:
+        conn = create_engine(dburl)
+    except Exception as e:
+        print("error ", e)
 
-    conn = sql.create_engine(dburl)
+    try:
+        data = pd.read_csv(addedfile)
+    except Exception as e:
+        print("error in reading file ", e)    
+               
 
-    data = pd.read_csv(addedfile)
     datafiltering = data[(data['Device'] == 'Smartphone') & (data['Age'] > 40)]
     required_columns = datafiltering[['Device', 'Age', 'Country']]
 
@@ -14,12 +21,10 @@ def storeinsqlDB(addedfile, dburl, batchsize=100):
         batch = required_columns.iloc[i:i + batchsize]
         batch.to_sql('netflix_user', conn, if_exists='append', index=False)
 
-        print("Batch "+ (i//batchsize + 1) + " inserted into the database")
+        print("Batch "+ str(i//batchsize + 1) + " inserted into the database")
     print("all data inserted in database")
 
 inputfile = "NetflixUserbase.csv"
 
-userchoice = input("Enter storage type (sql/nosql): ").strip().lower()
-
 db_url = input("Enter SQL DB URL: ")
-storeinsqlDB(inputfile, db_url)
+storeinsqlDB(inputfile, db_url, 70)
